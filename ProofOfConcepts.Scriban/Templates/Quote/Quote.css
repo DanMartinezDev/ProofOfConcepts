@@ -1,0 +1,100 @@
+html {
+    height: 99%;
+    width: 99%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+hr {
+    width: 97%;
+}
+
+html, body, * {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.quote-header-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.quote-footer-container {
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    margin-top: auto;
+}
+
+.quote-footer-container, * {
+    align-self: center;
+}
+
+.line-item-headers {
+    width: 100%;
+}
+
+.line-item-headers tr th:first-child {
+    width: 40%;
+    text-align:left;
+    padding: 5px;
+}
+
+.line-item-headers tr th:not(:first-child) {
+    width: 20%;
+    text-align: right;
+    padding: 5px;
+}
+
+.line-item-rows {
+    width: 100%;
+}
+
+.line-item-rows tr td:first-child {
+    width: 40%;
+    text-align: left;
+    padding: 5px;
+}
+
+.line-item-rows tr td:not(:first-child) {
+    width: 20%;
+    text-align: right;
+    padding: 5px;
+}
+
+.total-container {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+}
+
+.total {
+    width: 50%;
+}
+
+    .total tr td {
+        text-align: right;
+        padding: 5px;
+    }
+
+        .total tr td:first-child {
+            font-weight: bold;
+        }
+
+@page {
+    margin: 0.5in;
+}

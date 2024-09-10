@@ -1,0 +1,267 @@
+﻿@using Newtonsoft.Json
+@using TheWheelOfWarcraft.Services
+@using TheWheelOfWarcraft.Models
+
+@inject ITheWheelOfWarcraftService theWheelOfWarcraftService
+@inject IJSRuntime JSRuntime
+
+<div class="the-wheel-of-warcraft">
+    <div id="spinborder" />
+    <canvas id="wheel" width="650" height="650" />
+    <div @ref="spinButton" id="spin">Spin!</div>
+</div>
+
+@code {
+    private DotNetObjectReference<ClassSpinner>? dotNetHelper;
+    List<WoWClass> WoWClasses = [];
+    ElementReference spinButton;
+    Random random = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        WoWClasses = theWheelOfWarcraftService.GetAllWoWClasses();
+        await base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        var allSpecs = new List<object>();
+        WoWClasses.ForEach(wowClass => {
+            wowClass.WoWSpecializations.ForEach(wowSpec =>
+            {
+                allSpecs.Add(new
+                {
+                    Name = $"{wowSpec.SpecializationName} {wowClass.Name}",
+                    ClassColor = wowClass.ClassColor
+                });
+            });
+        });
+
+        if (firstRender)
+        {
+            dotNetHelper = DotNetObjectReference.Create(this);
+            JSRuntime.InvokeVoidAsync("Helpers.setDotNetHelper", dotNetHelper);
+            JSRuntime.InvokeVoidAsync("InitializeTheWheelOfWarcraft", JsonConvert.SerializeObject(ShuffleList(allSpecs)));
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    [JSInvokable("SpinnerStopped")]
+    public void SpinnerStopped(string text)
+    {
+        Console.WriteLine(text.Replace("\r\n", " "));
+    }
+
+    public List<object> ShuffleList(List<object> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = random.Next(n + 1);
+            object value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+
+        return list;
+    }
+}
+
+<script scoped>
+    class Helpers {
+        static dotNetHelper;
+
+        static setDotNetHelper(value) {
+            Helpers.dotNetHelper = value;
+        }
+
+        static async spinnerStopped(text) {
+            await Helpers.dotNetHelper.invokeMethodAsync('SpinnerStopped', text);
+        }
+    }
+
+    window.Helpers = Helpers;
+
+    var wowClasses = Array.apply(null, Array(39)).map(function (x, i) { return i; });
+
+    function InitializeTheWheelOfWarcraft(_wowClasses) {
+        wowClasses = JSON.parse(_wowClasses);
+
+        elSpin = document.getElementById("spin");
+        ctx = document.getElementById("wheel").getContext`2d`;
+        dia = ctx.canvas.width;
+        rad = dia / 2;
+
+        elSpin.addEventListener("click", () => {
+            if (isSpinning) return;
+            isSpinning = true;
+            isAccelerating = true;
+            angVelMax = rand(0.25, 0.40);
+        });
+
+        wowClasses.forEach(drawWoWClass);
+        rotate();
+        engine();
+    }
+
+    // Generate random float in range min-max:
+    var rand = (m, M) => Math.random() * (M - m) + m;
+
+    var tot = wowClasses.length;
+    var elSpin, ctx, dia, rad;
+
+    var PI = Math.PI;
+    var TAU = 2 * PI;
+    var arc = TAU / wowClasses.length;
+    var friction = 0.99;  // 0.995=soft, 0.99=mid, 0.98=hard
+    var angVelMin = 0.002; // Below that number will be treated as a stop
+    var angVelMax = 0; // Random ang.vel. to acceletare to
+    var angVel = 0;    // Current angular velocity
+    var ang = 0;       // Angle rotation in radians
+    var isSpinning = false;
+    var isAccelerating = false;
+    var isFirstSpin = true;
+
+    function getIndex() {
+        return Math.floor(tot - ang / TAU * tot) % tot;
+    }
+
+    function drawWoWClass(wowClass, i) {
+        var ang = arc * i;
+        // COLOR
+        ctx.beginPath();
+        ctx.fillStyle = wowClass.ClassColor;
+        ctx.moveTo(rad, rad);
+        ctx.arc(rad, rad, rad, ang, ang + arc);
+        ctx.lineTo(rad, rad);
+        ctx.fill();
+
+        // TEXT
+        var rot = ang + arc / 2;
+        ctx.save();
+        ctx.translate(rad, rad);
+        ctx.rotate(rot);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#000";
+        ctx.font = "small-caps 25px Roboto";
+        ctx.fillText(wowClass.Name.split(" ")[0], rad - 10, 10);
+
+        ctx.restore();
+    };
+
+    //* CSS rotate CANVAS Element */
+    function rotate() {
+        if (wowClasses.length > 0) {
+            var wowClass = wowClasses[getIndex()];
+            ctx.canvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+            if (isFirstSpin) {
+                elSpin.textContent = "Spin!"
+                isFirstSpin = false;
+            } else {
+                var firstLine = wowClass.Name.split(" ")[0];
+                var secondLine = wowClass.Name.split(" ").slice(1).join(" ");
+                elSpin.textContent = firstLine + "\r\n" + secondLine;
+                
+            }
+
+            elSpin.style.background = wowClass.ClassColor;
+        }
+    };
+
+    function frame() {
+
+        if (!isSpinning) return;
+
+        if (angVel >= angVelMax) isAccelerating = false;
+
+        // Accelerate
+        if (isAccelerating) {
+            angVel ||= angVelMin; // Initial velocity kick
+            angVel *= 1.06; // Accelerate
+        }
+
+        // Decelerate
+        else {
+            isAccelerating = false;
+            angVel *= friction; // Decelerate by friction
+
+            // SPIN END:
+            if (angVel < angVelMin) {
+                isSpinning = false;
+                angVel = 0;
+
+                Helpers.spinnerStopped(elSpin.textContent);
+            }
+        }
+
+        ang += angVel; // Update angle
+        ang %= TAU;    // Normalize angle
+        rotate();      // CSS rotate!
+    };
+
+    function engine() {
+        frame();
+        requestAnimationFrame(engine)
+    };
+</script>
+
+<style scoped>
+    .the-wheel-of-warcraft {
+        display: inline-flex;
+        position: relative;
+    }
+
+    #wheel {
+        display: block;
+    }
+
+    #spin {
+        font: bold 25px roboto;
+        text-align: center;
+        user-select: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30%;
+        height: 30%;
+        margin: -15%;
+        background: #fff;
+        color: #000;
+        box-shadow: 0 0 0 5px currentColor, 0 0px 15px 5px rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        transition: 0.8s;
+        white-space: pre;
+    }
+
+        #spin::after {
+            content: '';
+            position: absolute;
+            top: -14px;
+            border: 10px solid transparent;
+            border-bottom-color: currentColor;
+            border-top: none;
+        }
+
+    #spinborder {
+        font: 1.5rem/0 sans-serif;
+        user-select: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        color: #000;
+        box-shadow: 0 0 0 5px #000, 0 0px 15px 10px rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        transition: 0.8s;
+    }
+</style>

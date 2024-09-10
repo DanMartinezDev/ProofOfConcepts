@@ -1,0 +1,122 @@
+﻿@using ProofOfConcepts.Scriban;
+@using ProofOfConcepts.Scriban.Models;
+@using System.Web;
+@inject IJSRuntime JS
+
+@page "/quotegenerator"
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudPaper>
+        <PageTitle>Quote Generator</PageTitle>
+    </MudPaper>
+
+    <MudGrid Spacing="12">
+        <MudItem xs="12">
+            <MudPaper>
+                <MudText Align="Align.Center" Typo="Typo.h3" GutterBottom="true">Quote Generator</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper>
+                <MudGrid Class="d-flex align-center pa-3">
+                    <MudItem xs="6">
+                        <MudNumericField @bind-Value="discount"
+                                         HideSpinButtons="true"
+                                         Format="N2"
+                                         Immediate="true"
+                                         Variant="Variant.Outlined"
+                                         InvertMouseWheel="false"
+                                         Min="0"
+                                         Max="100"
+                                         Step="5"
+                                         Label="Discount % (Shift + Mouse Wheel)" />
+                    </MudItem>
+                    <MudItem>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateQuote">Generate Quote</MudButton>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" OnClick="DownloadPdfWithBlazor">Download Pdf With Blazor</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudGrid>
+                <MudPaper>
+                    <MudItem Class="pa-5">
+                        <div id="quote-container">
+                            <iframe id="quoteIframe" srcdoc="@template" />
+                        </div>
+                    </MudItem>
+                </MudPaper>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    string template = string.Empty;
+    decimal discount = 0;
+
+    protected override void OnInitialized()
+    {
+        GenerateQuote();
+
+        base.OnInitialized();
+    }
+
+    private Dictionary<string, object> GetQuote()
+    {
+        var quoteModel = new QuoteModel();
+        quoteModel.DiscountPercent = discount;
+        quoteModel.LineItems.Add(new LineItem("A sweet motorcycle", 1, 8000));
+        quoteModel.LineItems.Add(new LineItem("An awesome computer", 1, 4000));
+        quoteModel.LineItems.Add(new LineItem("A cool gaming chair", 1, 2000));
+
+        var quoteFooterModel = new QuoteFooterModel();
+        quoteFooterModel.Signed = "Dan Martinez";
+
+        var templateModels = new Dictionary<string, object>();
+        templateModels.Add("Model", quoteModel);
+        templateModels.Add("QuoteFooter", quoteFooterModel);
+
+        return templateModels;
+    }
+
+    private void GenerateQuote()
+    {
+        template = new ScribanService().RenderTemplate(GetQuote(), ScribanTemplates.Quote);
+    }
+
+    private async Task DownloadPdfWithBlazor()
+    {
+        var file = await new ScribanService().RenderTemplateAsPdf(GetQuote(), ScribanTemplates.Quote);
+        await JS.InvokeVoidAsync("BlazorDownloadFile", "your_pdf_quote.pdf", "application/octet-stream", file);
+    }
+}
+
+<script>
+    // I really don't like how blazor handles downloads.
+    // I had to find this method in a SO thread.
+    function BlazorDownloadFile(filename, contentType, data) {
+        const file = new File([data], filename, { type: contentType });
+        const exportUrl = URL.createObjectURL(file);
+
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = exportUrl;
+        a.download = filename;
+        a.target = "_self";
+        a.click();
+
+        URL.revokeObjectURL(exportUrl);
+        a.remove();
+    }
+</script>
+
+<style scoped>
+    #quote-container {
+        background-color: white;
+        width: 478px;
+        height: 618px;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 12px 12px 12px;
+    }
+</style>
+

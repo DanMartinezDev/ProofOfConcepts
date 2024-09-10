@@ -1,0 +1,31 @@
+﻿@using Newtonsoft.Json
+@using TheWheelOfWarcraft.Services
+@using TheWheelOfWarcraft.Models
+@using ProofOfConcepts.Client.Components
+
+@inject ITheWheelOfWarcraftService theWheelOfWarcraftService
+@inject IJSRuntime JSRuntime
+
+@page "/thewheelofwarcraft"
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="d-flex justify-center">
+    <ClassSpinner />
+</MudContainer>
+
+@code {
+    List<WoWClass> WoWClasses = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        WoWClasses = theWheelOfWarcraftService.GetAllWoWClasses();
+        await base.OnInitializedAsync();
+    }
+}
+
+<script scoped>
+    
+</script>
+
+<style scoped>
+
+</style>

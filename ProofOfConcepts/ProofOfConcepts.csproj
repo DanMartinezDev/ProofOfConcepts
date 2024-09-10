@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationInsightsResourceId>/subscriptions/62839d29-b5db-4839-885e-368d54b600c9/resourceGroups/ProofOfConcepts20240806191906ResourceGroup/providers/microsoft.insights/components/ProofOfConcepts</ApplicationInsightsResourceId>
+    <UserSecretsId>1ca058a2-7068-4f61-b916-9a6f46242d47</UserSecretsId>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProofOfConcepts.Client\ProofOfConcepts.Client.csproj" />
+    <ProjectReference Include="..\TheWheelOfWarcraft\TheWheelOfWarcraft.csproj" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.7" />
+  </ItemGroup>
+
+</Project>
