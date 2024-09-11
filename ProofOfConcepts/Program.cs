@@ -1,6 +1,6 @@
 using MudBlazor.Services;
 using ProofOfConcepts.Components;
-using TheWheelOfWarcraft.Services;
+using ProofOfConcepts.TheWheelOfWarcraft.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -4,20 +4,28 @@
 @inject IJSRuntime JS
 
 @page "/quotegenerator"
-<MudContainer MaxWidth="MaxWidth.Large">
-    <MudPaper>
-        <PageTitle>Quote Generator</PageTitle>
-    </MudPaper>
 
-    <MudGrid Spacing="12">
-        <MudItem xs="12">
-            <MudPaper>
-                <MudText Align="Align.Center" Typo="Typo.h3" GutterBottom="true">Quote Generator</MudText>
-            </MudPaper>
-        </MudItem>
+<PageTitle>Quote Generator</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudGrid Spacing="12" Class="mt-1">
         <MudItem xs="6">
             <MudPaper>
                 <MudGrid Class="d-flex align-center pa-3">
+                    <MudItem xs="12">                        
+                        <MudText Typo="Typo.h4">
+                            How Does it work?
+                        </MudText>
+                        <MudText Class="mb-2">
+                            Using Scriban to parse html and models to generate html/css/js.
+                        </MudText>
+                        <MudText Class="mb-2">
+                            Then the service returns generated content to iframe to display.
+                        </MudText>
+                        <MudText Class="mb-2">
+                            When downloading Scriban generates the html/css/js and uses PuppeteerSharp to convert it to a pdf.
+                        </MudText>
+                    </MudItem>
                     <MudItem xs="6">
                         <MudNumericField @bind-Value="discount"
                                          HideSpinButtons="true"
@@ -32,7 +40,7 @@
                     </MudItem>
                     <MudItem>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateQuote">Generate Quote</MudButton>
-                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" OnClick="DownloadPdfWithBlazor">Download Pdf With Blazor</MudButton>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Outlined" OnClick="DownloadPdfWithBlazor">Download</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudPaper>

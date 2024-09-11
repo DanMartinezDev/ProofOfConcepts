@@ -1,4 +1,4 @@
-﻿namespace TheWheelOfWarcraft.Models;
+﻿namespace ProofOfConcepts.TheWheelOfWarcraft.Models;
 
 public class WoWSpecialization
 {

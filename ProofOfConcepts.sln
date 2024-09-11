@@ -8,7 +8,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfConcepts.Client", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfConcepts.Scriban", "ProofOfConcepts.Scriban\ProofOfConcepts.Scriban.csproj", "{682A47B5-996B-4848-96C1-9C2B26BB055D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TheWheelOfWarcraft", "TheWheelOfWarcraft\TheWheelOfWarcraft.csproj", "{2AAE93F9-BE96-4C69-94D6-A59B11B002A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProofOfConcepts.TheWheelOfWarcraft", "TheWheelOfWarcraft\ProofOfConcepts.TheWheelOfWarcraft.csproj", "{2AAE93F9-BE96-4C69-94D6-A59B11B002A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

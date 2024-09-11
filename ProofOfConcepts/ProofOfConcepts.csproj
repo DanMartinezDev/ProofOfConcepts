@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProofOfConcepts.Client\ProofOfConcepts.Client.csproj" />
-    <ProjectReference Include="..\TheWheelOfWarcraft\TheWheelOfWarcraft.csproj" />
+    <ProjectReference Include="..\TheWheelOfWarcraft\ProofOfConcepts.TheWheelOfWarcraft.csproj" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.*" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.7" />

@@ -1,6 +1,6 @@
-﻿using TheWheelOfWarcraft.Enums;
+﻿using ProofOfConcepts.TheWheelOfWarcraft.Enums;
 
-namespace TheWheelOfWarcraft.Models.Classes;
+namespace ProofOfConcepts.TheWheelOfWarcraft.Models.Classes;
 
 public class Warrior : WoWClass
 {

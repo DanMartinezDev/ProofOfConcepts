@@ -1,4 +1,4 @@
-﻿namespace TheWheelOfWarcraft.Enums;
+﻿namespace ProofOfConcepts.TheWheelOfWarcraft.Enums;
 
 public static class WoWClassRoles
 {

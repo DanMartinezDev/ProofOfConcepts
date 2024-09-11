@@ -1,7 +1,6 @@
-﻿using System;
-using TheWheelOfWarcraft.Enums;
+﻿using ProofOfConcepts.TheWheelOfWarcraft.Enums;
 
-namespace TheWheelOfWarcraft.Models;
+namespace ProofOfConcepts.TheWheelOfWarcraft.Models;
 
 public class WoWClass
 {

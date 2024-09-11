@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProofOfConcepts.Scriban\ProofOfConcepts.Scriban.csproj" />
-    <ProjectReference Include="..\TheWheelOfWarcraft\TheWheelOfWarcraft.csproj" />
+    <ProjectReference Include="..\TheWheelOfWarcraft\ProofOfConcepts.TheWheelOfWarcraft.csproj" />
   </ItemGroup>
 
 </Project>

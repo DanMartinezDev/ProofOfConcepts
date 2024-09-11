@@ -1,7 +1,7 @@
-﻿using TheWheelOfWarcraft.Models;
-using TheWheelOfWarcraft.Models.Classes;
+﻿using ProofOfConcepts.TheWheelOfWarcraft.Models;
+using ProofOfConcepts.TheWheelOfWarcraft.Models.Classes;
 
-namespace TheWheelOfWarcraft.Services;
+namespace ProofOfConcepts.TheWheelOfWarcraft.Services;
 
 public interface ITheWheelOfWarcraftService
 {
